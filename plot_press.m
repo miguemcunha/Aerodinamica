@@ -5,7 +5,7 @@ function plot_press(P_e, i)
         contourf(x,y,P_e,50,'--');
     else
         [r, theta] = meshgrid(-5:0.1:5,-2*pi:0.1:2*pi);
-        contour(r,theta,P_e,50,'--');
+        contourf(r,theta,P_e,50,'--');
     end
     hold on;
     title('Sobreposição de escoamentos: Linhas isobáricas');
