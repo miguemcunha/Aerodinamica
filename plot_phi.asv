@@ -1,0 +1,16 @@
+function plot_phi(phi)
+    figure
+    
+    [x,y] = meshgrid(-5:0.1:5,-5:0.1:5);
+    contourf(x,y,phi,50,'--');
+    hold on;
+    title('Sobreposição de escoamentos: Linhas equipotenciais');
+    hold off;
+    hold on;
+    t = colorbar;
+    t.Label.String = 'Magnitude';
+    hold on;
+    axis tight;
+    axis equal;
+    hold off;
+end

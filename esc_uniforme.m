@@ -14,4 +14,4 @@ contour(x,y,phi,25);
 figure
 contour(x,y,psi,25)
 figure
-contour(x,y,v,25)
+contour(x,y,U,25)

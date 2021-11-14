@@ -1,0 +1,15 @@
+function plot_vel(v)
+    figure
+    [x,y] = meshgrid(-5:0.1:5,-5:0.1:5);
+    contourf(x,y,v,50,'--');
+    hold on;
+    title('Sobreposição de escoamentos: Magnitude de velocidade');
+    hold off;
+    hold on;
+    t = colorbar;
+    t.Label.String = 'Magnitude de velocidade [m/s]';
+    hold on;
+    axis tight;
+    axis equal;
+    hold off;
+end

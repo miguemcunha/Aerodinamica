@@ -21,10 +21,10 @@ P_e = P_t - 0.5*rho.*(v.^2);
 
 
 figure
-contour(x,y,phi,25);
+contour(x,y,phi,250)
 figure
-contour(x,y,psi,25)
+contour(x,y,psi,250)
 figure
-contour(x,y,v,25)
+contour(x,y,v,250)
 figure
-contour(x,y,P_e,25)
+contour(x,y,P_e,250)
