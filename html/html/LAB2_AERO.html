@@ -1,0 +1,293 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>LAB2_AERO</title><meta name="generator" content="MATLAB 9.8"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-11-07"><meta name="DC.source" content="LAB2_AERO.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">W</a></li><li><a href="#3">Phi</a></li><li><a href="#5">Psi</a></li><li><a href="#7">Velocidade</a></li><li><a href="#11">Press&atilde;o</a></li></ul></div><pre class="codeinput"><span class="comment">%   Vamos definir constantes</span>
+
+LIMITE_SUPERIOR = 2;
+LIMITE_INFERIOR = -LIMITE_SUPERIOR;
+
+INCREMENTOS     = 0.01;
+
+RHO             = 1.2;
+DIEDRO          = 2*pi;
+N               = pi / (DIEDRO);
+W1              = 8;
+Z1              = 2;
+M               = W1 / (Z1^N);
+
+<span class="comment">%   Vamos fazer o nosso plano</span>
+
+x = LIMITE_INFERIOR:INCREMENTOS:LIMITE_SUPERIOR;
+y = x.';
+
+z       = x + 1i*y;
+theta   = matrix_angle(z);
+r       = matrix_abs(z);
+<span class="comment">%   Vamos fazer as nossas fun&ccedil;&otilde;es:</span>
+</pre><h2 id="2">W</h2><p>O nosso W &eacute;:</p><p><img src="LAB2_AERO_eq00087699545579225359.png" alt="$$ W(z) =     \textrm{m}z^{\textrm{n}} ,\textrm{m} \in \textrm{R}, \textrm{n} \in \left ] 0, 2 \pi \right ] $$"></p><pre class="codeinput">W = M * r.^N .* exp(1i * N * theta);
+</pre><h2 id="3">Phi</h2><p>Esta fun&ccedil;&atilde;o &eacute; a de potencial de velocidade, podendo ser obtida atrav&eacute;s da fun&ccedil;&atilde;o W da seguinte forma:</p><p><img src="LAB2_AERO_eq15743802483997515402.png" alt="$$ \Phi(z) = \textrm{Re}(W(z)) $$"></p><p>No entanto, podemos deduzi-la. Para nosso al&iacute;vio, n&atilde;o &eacute; dif&iacute;cil, ficando com (j&aacute; posta na forma polar):</p><p><img src="LAB2_AERO_eq13169558929640474286.png" alt="$$ \Phi(z) = \textrm{m}r^{\textrm{n}} \textrm{cos}( \textrm{n} \theta ).$$"></p><pre class="codeinput">Phi             = real(W);
+</pre><pre class="codeinput">hold <span class="string">on</span>
+contourf(x,y, Phi, -9:1:9);
+caxis([-9,9]);
+bar                 = colorbar;
+bar.Label.String    = <span class="string">'Elevation (ft in 1000s)'</span>;
+title(<span class="string">"\Phi(z)"</span>)
+contour(x,y, Phi, [0, 0.001], <span class="string">'black'</span>, <span class="string">'LineWidth'</span>, 1);
+hold <span class="string">off</span>
+</pre><img vspace="5" hspace="5" src="LAB2_AERO_01.png" alt=""> <h2 id="5">Psi</h2><p>Esta fun&ccedil;&atilde;o &eacute; a de corrente, podendo ser obtida atrav&eacute;s da fun&ccedil;&atilde;o W da seguinte forma:</p><p><img src="LAB2_AERO_eq08377577015683573034.png" alt="$$ \Psi(z) = \textrm{Im}(W(z)) $$"></p><p>No entanto, podemos deduzi-la. Para nosso al&iacute;vio, n&atilde;o &eacute; dif&iacute;cil, ficando com (j&aacute; posta na forma polar):</p><p><img src="LAB2_AERO_eq15808523774805261445.png" alt="$$ \Psi(z) = \textrm{m}r^{\textrm{n}} \textrm{sin}( \textrm{n} \theta ).$$"></p><pre class="codeinput">Psi = imag(W);
+</pre><pre class="codeinput">hold <span class="string">on</span>
+contourf(x,y, Psi, linspace(0,8,8));
+caxis([0,8]);
+colorbar;
+[c, h] = contour(x,y, Psi, [0, 0.001], <span class="string">'black'</span>, <span class="string">'LineWidth'</span>, 2);
+title(<span class="string">"\Psi(z)"</span>)
+hold <span class="string">off</span>
+</pre><img vspace="5" hspace="5" src="LAB2_AERO_02.png" alt=""> <h2 id="7">Velocidade</h2><p>A fun&ccedil;&atilde;o de velocidade, u(z), pode ser obtida atrav&eacute;s da fun&ccedil;&atilde;o W da seguinte forma:</p><p><img src="LAB2_AERO_eq07634801934964572086.png" alt="$$ \bar{u}(z) = \frac{\partial W(z)}{\partial z} $$"></p><p>&Eacute; de notar que n&atilde;o estamos a usar a Simbolic Toolbox do Matlab, pelo que temos n&oacute;s de calcular a deriva. Para nossa sorte, n&atilde;o &eacute; dif&iacute;cil, ficando com (j&aacute; posta na forma polar):</p><p><img src="LAB2_AERO_eq04766230575596809475.png" alt="$$ u(z) = \textrm{mn}r^{\textrm{n - 1}} e^{ i (\textrm{n - 1}) \theta }.$$"></p><pre class="codeinput">U                                       = M * N * r.^(N - 1) .* exp(1i * (N - 1) * theta);
+U_0                                     = U(ceil(size(U,1)/2), ceil(size(U,2)/2));
+U(ceil(size(U,1)/2), ceil(size(U,2)/2)) = 0;
+
+V                                       = abs(U);
+V_max                                   = max(V, [], <span class="string">'all'</span>);
+V_min                                   = min(V, [], <span class="string">'all'</span>);
+V(ceil(size(V,1)/2), ceil(size(V,2)/2)) = abs(U_0);
+
+u                                       = real(U);
+u_max                                   = max(u, [], <span class="string">'all'</span>);
+u_min                                   = min(u, [], <span class="string">'all'</span>);
+u(ceil(size(u,1)/2), ceil(size(u,2)/2)) = real(U_0);
+
+v                                      	= -imag(U);
+v_max                                   = max(v, [], <span class="string">'all'</span>);
+v_min                                   = min(v, [], <span class="string">'all'</span>);
+v(ceil(size(v,1)/2), ceil(size(v,2)/2)) = -imag(U_0);
+</pre><pre class="codeinput">contourf(x,y, V, 1:1:10);
+caxis([0,10]);
+colorbar;
+hold <span class="string">on</span>
+contour(x,y, Psi, [0, 0.001], <span class="string">'black'</span>, <span class="string">'LineWidth'</span>, 2);
+scatter(0,0, <span class="string">'black'</span>, <span class="string">'filled'</span>)
+hold <span class="string">off</span>
+</pre><img vspace="5" hspace="5" src="LAB2_AERO_03.png" alt=""> <pre class="codeinput">contourf(x,y, u, -10:10);
+colorbar;
+hold <span class="string">on</span>
+contour(x,y, Psi, [0, 0.001], <span class="string">'black'</span>, <span class="string">'LineWidth'</span>, 2);
+hold <span class="string">off</span>
+</pre><img vspace="5" hspace="5" src="LAB2_AERO_04.png" alt=""> <pre class="codeinput">contourf(x,y, v, -10:10);
+colorbar;
+hold <span class="string">on</span>
+contour(x,y, Psi, [0, 0.001], <span class="string">'black'</span>, <span class="string">'LineWidth'</span>, 2);
+hold <span class="string">off</span>
+</pre><img vspace="5" hspace="5" src="LAB2_AERO_05.png" alt=""> <h2 id="11">Press&atilde;o</h2><pre class="codeinput">pe  = 10;
+P   = pe - 1/2*RHO*V.^2;
+
+contourf(x,y, P, -10:10);
+colorbar;
+hold <span class="string">on</span>
+contour(x,y, Psi, [0, 0.001], <span class="string">'black'</span>, <span class="string">'LineWidth'</span>, 2);
+hold <span class="string">off</span>
+</pre><img vspace="5" hspace="5" src="LAB2_AERO_06.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%   Vamos definir constantes
+
+LIMITE_SUPERIOR = 2;
+LIMITE_INFERIOR = -LIMITE_SUPERIOR;
+
+INCREMENTOS     = 0.01;
+
+RHO             = 1.2;
+DIEDRO          = 2*pi;
+N               = pi / (DIEDRO);
+W1              = 8;
+Z1              = 2;
+M               = W1 / (Z1^N);
+
+%   Vamos fazer o nosso plano
+
+x = LIMITE_INFERIOR:INCREMENTOS:LIMITE_SUPERIOR;
+y = x.';
+
+z       = x + 1i*y;
+theta   = matrix_angle(z);
+r       = matrix_abs(z);
+%   Vamos fazer as nossas funções:
+%% W
+%   
+% O nosso W é:
+%
+% $$ W(z) =     \textrm{m}z^{\textrm{n}} ,\textrm{m} \in \textrm{R}, \textrm{n} \in \left ] 0, 2 \pi \right ] $$
+%
+W = M * r.^N .* exp(1i * N * theta);
+%% Phi
+%
+% Esta função é a de potencial de velocidade, podendo ser obtida através da 
+% função W da seguinte forma:
+%
+% $$ \Phi(z) = \textrm{Re}(W(z)) $$
+%
+% No entanto, podemos deduzi-la. Para nosso alívio, não é difícil, ficando 
+% com (já posta na forma polar):
+%
+% $$ \Phi(z) = \textrm{m}r^{\textrm{n}} \textrm{cos}( \textrm{n} \theta ).$$
+%
+Phi             = real(W);
+%%%
+hold on
+contourf(x,y, Phi, -9:1:9);
+caxis([-9,9]);
+bar                 = colorbar;
+bar.Label.String    = 'Elevation (ft in 1000s)';
+title("\Phi(z)")
+contour(x,y, Phi, [0, 0.001], 'black', 'LineWidth', 1);
+hold off
+%% Psi
+%
+% Esta função é a de corrente, podendo ser obtida através da função W da
+% seguinte forma:
+%
+% $$ \Psi(z) = \textrm{Im}(W(z)) $$
+%
+% No entanto, podemos deduzi-la. Para nosso alívio, não é difícil, ficando 
+% com (já posta na forma polar):
+%
+% $$ \Psi(z) = \textrm{m}r^{\textrm{n}} \textrm{sin}( \textrm{n} \theta ).$$
+%
+Psi = imag(W);
+%%%
+hold on
+contourf(x,y, Psi, linspace(0,8,8));
+caxis([0,8]);
+colorbar;
+[c, h] = contour(x,y, Psi, [0, 0.001], 'black', 'LineWidth', 2);
+title("\Psi(z)")
+hold off
+%% Velocidade
+%
+% A função de velocidade, u(z), pode ser obtida através da função W da
+% seguinte forma:
+%
+% $$ \bar{u}(z) = \frac{\partial W(z)}{\partial z} $$
+%
+% É de notar que não estamos a usar a Simbolic Toolbox do Matlab, pelo que 
+% temos nós de calcular a deriva. Para nossa sorte, não é difícil, ficando 
+% com (já posta na forma polar):
+%
+% $$ u(z) = \textrm{mn}r^{\textrm{n - 1}} e^{ i (\textrm{n - 1}) \theta }.$$
+%
+U                                       = M * N * r.^(N - 1) .* exp(1i * (N - 1) * theta);
+U_0                                     = U(ceil(size(U,1)/2), ceil(size(U,2)/2));
+U(ceil(size(U,1)/2), ceil(size(U,2)/2)) = 0;
+
+V                                       = abs(U);
+V_max                                   = max(V, [], 'all');
+V_min                                   = min(V, [], 'all');
+V(ceil(size(V,1)/2), ceil(size(V,2)/2)) = abs(U_0);
+
+u                                       = real(U);
+u_max                                   = max(u, [], 'all');
+u_min                                   = min(u, [], 'all');
+u(ceil(size(u,1)/2), ceil(size(u,2)/2)) = real(U_0);
+
+v                                      	= -imag(U);
+v_max                                   = max(v, [], 'all');
+v_min                                   = min(v, [], 'all');
+v(ceil(size(v,1)/2), ceil(size(v,2)/2)) = -imag(U_0);
+%%
+contourf(x,y, V, 1:1:10);
+caxis([0,10]);
+colorbar;
+hold on
+contour(x,y, Psi, [0, 0.001], 'black', 'LineWidth', 2);
+scatter(0,0, 'black', 'filled')
+hold off
+%%
+contourf(x,y, u, -10:10);
+colorbar;
+hold on
+contour(x,y, Psi, [0, 0.001], 'black', 'LineWidth', 2);
+hold off
+%%
+contourf(x,y, v, -10:10);
+colorbar;
+hold on
+contour(x,y, Psi, [0, 0.001], 'black', 'LineWidth', 2);
+hold off
+%% Pressão
+%
+%
+%
+pe  = 10;
+P   = pe - 1/2*RHO*V.^2;
+
+contourf(x,y, P, -10:10);
+colorbar;
+hold on
+contour(x,y, Psi, [0, 0.001], 'black', 'LineWidth', 2);
+hold off
+##### SOURCE END #####
+--></body></html>
