@@ -1,6 +1,6 @@
 clear
 [r, theta] = meshgrid(-5:0.1:5,-2*pi:0.1:2*pi);
-z = r.*(cos(theta)+1i.*sin(theta));
+z = r.*exp(1i.*theta);
 theta = angle(z);
 r = abs(z);
 W = 0;
