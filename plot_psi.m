@@ -13,9 +13,6 @@ function plot_psi(psi, i)
     set(h, 'Color', 'b');
     hold off;
     hold on;
-    t = colorbar;
-    t.Label.String = 'Magnitude';
-    hold on;
     axis tight;
     axis equal;
     hold off;
