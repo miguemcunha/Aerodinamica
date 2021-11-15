@@ -1,0 +1,313 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>final_polares</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-11-15"><meta name="DC.source" content="final_polares.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput">clear
+[r, theta] = meshgrid(0:0.1:5,0:0.1:2*pi);
+z = r.*exp(1i.*theta);
+theta = angle(z);
+r = abs(z);
+W = 0;
+dw_dz = 0;
+rho = 1.225;
+P_t = 100002.45;
+check = 0;
+msg1 = <span class="string">"Select the number of flow elements to evaluate"</span>;
+opt1 = [<span class="string">"1"</span>, <span class="string">"2"</span>, <span class="string">"3"</span>, <span class="string">"4"</span>];
+choice = menu(msg1, opt1);
+
+
+<span class="keyword">for</span> i=1:1:choice
+    msg2 = sprintf(<span class="string">"Select the flow element number %d"</span>, i);
+    opt2 = [<span class="string">"Sink/Source"</span>,<span class="string">"Vortex"</span>,<span class="string">"Uniform Flow"</span>];
+    flow_element = menu(msg2, opt2);
+    <span class="keyword">switch</span> flow_element
+        <span class="keyword">case</span> 1
+            check = 1;
+            prompt = {<span class="string">'Enter value of m:'</span>,<span class="string">'Enter coordinate r:'</span>,<span class="string">'Enter coordinate theta:'</span>};
+            dlgtitle = <span class="string">'Values of source/sink'</span>;
+            answer = inputdlg(prompt,dlgtitle);
+            m = str2double(answer{1});
+            b = str2double(answer{2});
+            a = str2double(answer{3});
+
+            sour_sink = (m/(2*pi)).*(log(z-(b*exp(1i*a))));
+            dw_sour_sink = (m./(2*pi.*(z-(b*exp(1i*a)))));
+
+            W = W + sour_sink;
+            dw_dz = dw_dz + dw_sour_sink;
+        <span class="keyword">case</span> 2
+            check = 1;
+            prompt = {<span class="string">'Enter value of Gamma:'</span>,<span class="string">'Enter coordinate r:'</span>,<span class="string">'Enter coordinate theta:'</span>};
+            dlgtitle = <span class="string">'Values of vortex'</span>;
+            answer = inputdlg(prompt,dlgtitle);
+            Gamma = str2double(answer{1});
+            b = str2double(answer{2});
+            a = str2double(answer{3});
+
+            vortex = -(1i*Gamma/(2*pi))*log(z-(b*exp(1i*a)));
+            dw_vortex = -((1i*Gamma)./(2*pi*(z-(b*exp(1i*a)))));
+
+            W = W + vortex;
+            dw_dz = dw_dz + dw_vortex;
+        <span class="keyword">case</span> 3
+            <span class="keyword">if</span> check == 0
+                check = 2;
+            <span class="keyword">end</span>
+            prompt = {<span class="string">'Enter value of U:'</span>};
+            dlgtitle = <span class="string">'Values of uniform field'</span>;
+            answer = inputdlg(prompt,dlgtitle);
+            U = str2double(answer{1});
+
+            uniform = U*z;
+            dw_uniform = U;
+
+            W = W + uniform;
+            dw_dz = dw_dz + dw_uniform;
+        <span class="keyword">otherwise</span>
+            <span class="comment">%default</span>
+    <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+
+phi = real(W);
+psi = imag(W);
+V = conj(dw_dz);
+v = abs(V);
+P_e = P_t - (rho.*(v.^2)/2);
+
+plot_phi(phi, 1);
+plot_psi(psi, 1);
+<span class="keyword">if</span> check == 1
+    plot_vel(v, 1);
+    plot_press(P_e, 1);
+<span class="keyword">end</span>
+
+<span class="comment">%figure</span>
+<span class="comment">%title('Sobreposi&ccedil;&atilde;o de escoamentos: Linhas de corrente');</span>
+<span class="comment">%barra1 = colorbar;</span>
+<span class="comment">%caxis = [0 10];</span>
+<span class="comment">%axis tight</span>
+<span class="comment">%axis equal</span>
+<span class="comment">%xlabel1 = ('x[m]');</span>
+<span class="comment">%ylabel1 = ('y[m]');</span>
+<span class="comment">%contourf(x,y,phi,50,'--');</span>
+
+<span class="comment">% figure</span>
+<span class="comment">% axis tight</span>
+<span class="comment">% axis equal</span>
+<span class="comment">% title('Sobreposi&ccedil;&atilde;o de escoamentos: Linhas de corrente');</span>
+<span class="comment">% barra2 = colorbar;</span>
+<span class="comment">% barra2.Label.String = 'Magnitude';</span>
+<span class="comment">% xlabel2 = ('x[m]');</span>
+<span class="comment">% ylabel2 = ('y[m]');</span>
+<span class="comment">% contourf(x,y,psi,50,'--');</span>
+<span class="comment">% if check == 1</span>
+<span class="comment">%     figure</span>
+<span class="comment">%     axis tight</span>
+<span class="comment">%     axis equal</span>
+<span class="comment">%     title('Sobreposi&ccedil;&atilde;o de escoamentos: Linhas de corrente');</span>
+<span class="comment">%     barra3 = colorbar;</span>
+<span class="comment">%     barra3.Label.String = 'Magnitude';</span>
+<span class="comment">%     xlabel3 = ('x[m]');</span>
+<span class="comment">%     ylabel3 = ('y[m]');</span>
+<span class="comment">%     contourf(x,y,v,50,'--');</span>
+<span class="comment">%     figure</span>
+<span class="comment">%     axis tight</span>
+<span class="comment">%     axis equal</span>
+<span class="comment">%     title('Sobreposi&ccedil;&atilde;o de escoamentos: Linhas de corrente');</span>
+<span class="comment">%     barra4 = color2bar;</span>
+<span class="comment">%     barra4.Label.String = 'Magnitude';</span>
+<span class="comment">%     xlabel4 = ('x[m]');</span>
+<span class="comment">%     ylabel4 = ('y[m]');</span>
+<span class="comment">%     contourf(x,y,P_e,50,'--');</span>
+<span class="comment">% end</span>
+</pre><img vspace="5" hspace="5" src="final_polares_01.png" alt=""> <img vspace="5" hspace="5" src="final_polares_02.png" alt=""> <img vspace="5" hspace="5" src="final_polares_03.png" alt=""> <img vspace="5" hspace="5" src="final_polares_04.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clear
+[r, theta] = meshgrid(0:0.1:5,0:0.1:2*pi);
+z = r.*exp(1i.*theta);
+theta = angle(z);
+r = abs(z);
+W = 0;
+dw_dz = 0;
+rho = 1.225;
+P_t = 100002.45;
+check = 0;
+msg1 = "Select the number of flow elements to evaluate";
+opt1 = ["1", "2", "3", "4"];
+choice = menu(msg1, opt1);
+
+
+for i=1:1:choice
+    msg2 = sprintf("Select the flow element number %d", i);
+    opt2 = ["Sink/Source","Vortex","Uniform Flow"];
+    flow_element = menu(msg2, opt2);
+    switch flow_element
+        case 1
+            check = 1;
+            prompt = {'Enter value of m:','Enter coordinate r:','Enter coordinate theta:'};
+            dlgtitle = 'Values of source/sink';
+            answer = inputdlg(prompt,dlgtitle);
+            m = str2double(answer{1});
+            b = str2double(answer{2});
+            a = str2double(answer{3});
+            
+            sour_sink = (m/(2*pi)).*(log(z-(b*exp(1i*a))));
+            dw_sour_sink = (m./(2*pi.*(z-(b*exp(1i*a)))));
+            
+            W = W + sour_sink;
+            dw_dz = dw_dz + dw_sour_sink;
+        case 2
+            check = 1;
+            prompt = {'Enter value of Gamma:','Enter coordinate r:','Enter coordinate theta:'};
+            dlgtitle = 'Values of vortex';
+            answer = inputdlg(prompt,dlgtitle);
+            Gamma = str2double(answer{1});
+            b = str2double(answer{2});
+            a = str2double(answer{3});
+            
+            vortex = -(1i*Gamma/(2*pi))*log(z-(b*exp(1i*a)));
+            dw_vortex = -((1i*Gamma)./(2*pi*(z-(b*exp(1i*a)))));
+            
+            W = W + vortex;
+            dw_dz = dw_dz + dw_vortex;
+        case 3 
+            if check == 0
+                check = 2;
+            end
+            prompt = {'Enter value of U:'};
+            dlgtitle = 'Values of uniform field';
+            answer = inputdlg(prompt,dlgtitle);
+            U = str2double(answer{1});
+
+            uniform = U*z;
+            dw_uniform = U;
+            
+            W = W + uniform;
+            dw_dz = dw_dz + dw_uniform;
+        otherwise 
+            %default
+    end
+            
+end
+    
+phi = real(W);
+psi = imag(W);
+V = conj(dw_dz);
+v = abs(V);
+P_e = P_t - (rho.*(v.^2)/2);
+
+plot_phi(phi, 1);
+plot_psi(psi, 1);
+if check == 1
+    plot_vel(v, 1);
+    plot_press(P_e, 1);
+end
+
+%figure
+%title('Sobreposição de escoamentos: Linhas de corrente');
+%barra1 = colorbar;
+%caxis = [0 10];
+%axis tight
+%axis equal
+%xlabel1 = ('x[m]');
+%ylabel1 = ('y[m]');
+%contourf(x,y,phi,50,'REPLACE_WITH_DASH_DASH');
+
+% figure
+% axis tight
+% axis equal
+% title('Sobreposição de escoamentos: Linhas de corrente');
+% barra2 = colorbar;
+% barra2.Label.String = 'Magnitude';
+% xlabel2 = ('x[m]');
+% ylabel2 = ('y[m]');
+% contourf(x,y,psi,50,'REPLACE_WITH_DASH_DASH');
+% if check == 1
+%     figure
+%     axis tight
+%     axis equal
+%     title('Sobreposição de escoamentos: Linhas de corrente');
+%     barra3 = colorbar;
+%     barra3.Label.String = 'Magnitude';
+%     xlabel3 = ('x[m]');
+%     ylabel3 = ('y[m]');
+%     contourf(x,y,v,50,'REPLACE_WITH_DASH_DASH');
+%     figure
+%     axis tight
+%     axis equal
+%     title('Sobreposição de escoamentos: Linhas de corrente');
+%     barra4 = color2bar;
+%     barra4.Label.String = 'Magnitude';
+%     xlabel4 = ('x[m]');
+%     ylabel4 = ('y[m]');
+%     contourf(x,y,P_e,50,'REPLACE_WITH_DASH_DASH');
+% end
+##### SOURCE END #####
+--></body></html>
